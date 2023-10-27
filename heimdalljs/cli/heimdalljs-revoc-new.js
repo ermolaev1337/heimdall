@@ -6,7 +6,7 @@ const { exec } = require("child_process");
 const {RevocationRegistry} = require("../src/revocation.js");
 const {merklePoseidon} = require("../src/crypto/poseidon.js");
 const {signPoseidon} = require("../circomlib/eddsa.js");
-const {writeFilesRevocation, pushGitRevocation} = require("./util");
+const {writeFilesRevocation, pushGitRevocation, pushRevocationGitHttps} = require("./util");
 
 
 program.option("-s, --secretKey <Path>", "Path to the secret key of the issuer")
@@ -19,7 +19,8 @@ program.action((options) => {
     createNewRegistry(options).then(res => {
         writeFilesRevocation(res, options.destination).then(res => {
             if (options.git) {
-                pushGitRevocation(options.destination);
+                //pushGitRevocation(options.destination);
+                pushRevocationGitHttps(options.destination);
             }
         });
     }).catch(console.log);

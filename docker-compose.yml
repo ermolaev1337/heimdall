@@ -3,17 +3,5 @@ services:
   heimdall:
     container_name: heimdall
     build: .
-    volumes:
-      - ./:/app
-    working_dir: /app/heimdalljs
-#    tty: true
-#TODO: write a script which creates trusted setup (*.zkey, verification key and circom)
-#TODO: update circom to 2.0.9 (2.0.9 -> 2.0.6 to make it compatible with ark circom)
-#TODO: create a sample presentation (proof of: age, nationality, address)
-#TODO: maker circomlib as a submodule
-
-#TODO: prepare another demo closer to the e-commerce
-#TODO: split in verifier and issuer (look how ACAPY made it!!! how the API calls are grouped and called!!! to have simsilaty looking endpoints!!! implement hooks)
-#TODO: use Rapid SNARK instead of SNARK JS
-
-#TODO: understand all the stages
+    ports:
+      - 8080:8080

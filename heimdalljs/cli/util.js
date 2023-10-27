@@ -3,7 +3,8 @@ const {merklePoseidon} = require("../src/crypto/poseidon");
 const fs = require("fs/promises");
 const path = require("path");
 const {stringifyBigInts} = require("../src/util");
-const { exec } = require("child_process");
+const { exec, execSync} = require("child_process");
+require('dotenv').config()
 const MAX_POLYGON_SIZE = 50;
 
 const getSecretKey = async (secretKeyPath) => {
@@ -54,7 +55,6 @@ const getRevocationTree = async (treeName, source) => {
     }
 };
 
-
 const pushGitRevocation = (destination) => {
     let reg = path.join(destination, "revocation_registry.json");
     let roo = path.join(destination, "revocation_root.json");
@@ -73,6 +73,49 @@ const pushGitRevocation = (destination) => {
     });
 };
 
+function pushRevocationGitHttps(destination) {
+    let reg = path.join(destination, "revocation_registry.json");
+    let roo = path.join(destination, "revocation_root.json");
+    //let sig = path.join(destination, "revocation_signature.json");
+    
+    // Define authentication 
+    const repoUrl = 'https://github.com/ivabe/heimdall.git';
+    const username = 'ivabe';
+    const token = process.env.GITHUB_TOKEN;
+    const remote_name = "revoc_remote";
+    const branch = "revoc_tree";
+    
+    exec(`git config --global user.email \"heimdalljs@heimdall.agent\" && git config --global user.name \"heimdalljs\"`);
+
+    // Set the credentials in the git url
+    const authenticatedRepoUrl = repoUrl.replace('https://', `https://${username}:${token}@`);
+    exec(`git remote add ${remote_name} ${authenticatedRepoUrl}`);
+    execSync(`git checkout ${branch}`, (error, stdout, stderr) => {
+        if (error) {
+            console.log(`error: ${error.message}`);
+            return;
+        }
+        if (stderr) {
+            console.log(`stderr: ${stderr}`);
+            return;
+        }
+        console.log(`stdout: ${stdout}`);
+    });
+
+    exec("git add " +  `${reg} ${roo}` + " && git commit -m 'creating revocation registry'"
+        + ` && git push -u ${remote_name} ${branch}`, (error, stdout, stderr) => {
+        if (error) {
+            console.log(`error: ${error.message}`);
+            return;
+        }
+        if (stderr) {
+            console.log(`stderr: ${stderr}`);
+            return;
+        }
+        console.log(`stdout: ${stdout}`);
+    });
+}
+
 const writeFilesRevocation = async (reg, destination) => {
     reg.tree.leaves = stringifyBigInts(reg.tree.leaves);
     reg.tree.data = stringifyBigInts(reg.tree.data);
@@ -88,5 +131,5 @@ const writeFilesRevocation = async (reg, destination) => {
     return Promise.resolve(true);
 };
 
-module.exports = {parsePolygon, getRevocationTree, getSecretKey, writeFilesRevocation, pushGitRevocation,
+module.exports = {parsePolygon, getRevocationTree, getSecretKey, writeFilesRevocation, pushGitRevocation, pushRevocationGitHttps,
     getRevocationRoot};

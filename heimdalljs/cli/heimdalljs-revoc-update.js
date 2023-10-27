@@ -5,7 +5,7 @@ const {RevocationRegistry} = require("../src/revocation.js");
 const {merklePoseidon} = require("../src/crypto/poseidon.js");
 const {signPoseidon} = require("../circomlib/eddsa.js");
 const path = require("path");
-const {writeFilesRevocation, pushGitRevocation} = require("./util");
+const {writeFilesRevocation, pushGitRevocation, pushRevocationGitHttps} = require("./util");
 
 
 program.arguments("<index>")
@@ -37,7 +37,8 @@ program.action((index, options) => {
     updateRegistry(index, options).then(res => {
         writeFilesRevocation(res, options.destination).then(res => {
             if (options.git) {
-                pushGitRevocation(options.destination);
+                //pushGitRevocation(options.destination);
+                pushRevocationGitHttps(options.destination);
             }
         });
     }).catch(console.log);

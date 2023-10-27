@@ -36,7 +36,7 @@ class RevocationRegistry {
         if (comparator === 1n) {
             const newValue = BigInt(this.tree.leaves[indexLeaf]) - 2n ** indexBit;
             console.debug('update() newValue >> ', newValue);
-            this.tree.update(indexLeaf,);
+            this.tree.update(indexLeaf, newValue);
         } else {
             const newValue = BigInt(this.tree.leaves[indexLeaf]) + 2n ** indexBit;
             console.debug('update() newValue >> ', newValue);
