@@ -42,8 +42,8 @@ const generatePresentationAttribute = async (index, options) => {
             attrs_index.map(Number) // List index of attributes to dislclose
         );
         await presentation.generateMult(attrs_index.length);
-        await presentation.verifyMultAttrs(poseidonHash, credential, '', attrs_index.length);
-        let re = await presentation.verifyMultAttrs(poseidonHash, credential, '', attrs_index.length);
+        await presentation.verifyMultAttrs(poseidonHash, credential, revocationTree.root, attrs_index.length);
+        let re = await presentation.verifyMultAttrs(poseidonHash, credential, revocationTree.root, attrs_index.length);
         if (re === false) return Promise.reject(re);
         return Promise.resolve(presentation);
     } catch (err) {
