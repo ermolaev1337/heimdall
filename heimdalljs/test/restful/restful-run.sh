@@ -47,10 +47,10 @@ curl -s --request POST "http://$IP_CA/upload/file?name=ca_sk.txt" --form "uplfil
 
 
 REGISTRY=https://github.com/ermolaev1337/test-revoc.git
-CREDENTIAL_ID=1234501
+CREDENTIAL_ID_ISSUER=1234500
 
 echo "Creating credential of the issuer by the CA"
-curl -s "http://$IP_CA/heimdalljs/cred/new?attributes=attr_issuer.json&id=$CREDENTIAL_ID&publicKey=issuer_pk.json&expiration=365&type=RegistrationOffice&delegatable=1&registry=$REGISTRY&secretKey=ca_sk.txt&destination=cred_issuer.json" > cred_issuer.json
+curl -s "http://$IP_CA/heimdalljs/cred/new?attributes=attr_issuer.json&id=$CREDENTIAL_ID_ISSUER&publicKey=issuer_pk.json&expiration=365&type=RegistrationOffice&delegatable=1&registry=$REGISTRY&secretKey=ca_sk.txt&destination=cred_issuer.json" > cred_issuer.json
 
 
 
@@ -74,9 +74,10 @@ curl -s --request POST "http://$IP_ISSUER/upload/file?name=holder_pk.json" --for
 curl -s --request POST "http://$IP_ISSUER/upload/file?name=issuer_sk.txt" --form "uplfile=@issuer_sk.txt"
 
 
-echo "Creating credential of the holder by the issuer"
-curl -s "http://$IP_ISSUER/heimdalljs/cred/new?attributes=attr_holder.json&id=1234501&publicKey=holder_pk.json&expiration=365&type=IdentityCard&delegatable=0&registry=$REGISTRY&secretKey=issuer_sk.txt&destination=cred_holder.json" > cred_holder.json
+CREDENTIAL_ID_HOLDER=1234501
 
+echo "Creating credential of the holder by the issuer"
+curl -s "http://$IP_ISSUER/heimdalljs/cred/new?attributes=attr_holder.json&id=$CREDENTIAL_ID_HOLDER&publicKey=holder_pk.json&expiration=365&type=IdentityCard&delegatable=0&registry=$REGISTRY&secretKey=issuer_sk.txt&destination=cred_holder.json" > cred_holder.json
 
 
 echo "Uploading files to holder's Heimdall instance"
@@ -93,7 +94,7 @@ curl -s "http://$IP_HOLDER/heimdalljs/verify?path=pres_attribute_before_revocati
 
 echo "Revoke the cred"
 source .env
-curl -s "http://$IP_ISSUER/heimdalljs/revoc/update?index=$CREDENTIAL_ID&token=$GITHUB_TOKEN" > revocation-result.txt
+curl -s "http://$IP_ISSUER/heimdalljs/revoc/update?index=$CREDENTIAL_ID_HOLDER&token=$GITHUB_TOKEN" > revocation-result.txt
 
 echo "Generate the presentation of the attribute by holder (after revocation)"
 curl -s "http://$IP_HOLDER/heimdalljs/pres/attribute?index=10&expiration=100&challenge=$CHALLENGE&secretKey=holder_sk.txt&destination=pres_attribute_after_revocation.json&credential=cred_holder.json" > pres_attribute_after_revocation.json
