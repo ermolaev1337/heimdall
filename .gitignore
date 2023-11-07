@@ -10,7 +10,6 @@ generate_witness.js
 witness_calculator.js
 
 # Logs
-logs
 *.log
 npm-debug.log*
 yarn-debug.log*
