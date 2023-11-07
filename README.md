@@ -20,13 +20,15 @@ Heimdall is a SSI framework based on generic ZKPs.
 
 ## API Boostrap with Docker
 - Install both `docker` and `docker-compose`
+- Jump inside `./heimdalljs/test/restful`
+- Create there a `.env` file
+- Copy content of the `test.env` file to the `.env` file
+- Get an auth token from GitHub (you need to have write access to `https://github.com/ermolaev1337/test-revoc`)
+- Put the token from GitHub as a var `GITHUB_TOKEN` in the `.env` file
+- Jump back `./heimdalljs`
 - Build `docker-compose build`
 - Up `docker-compose up`
-- Jump inside `./heimdalljs/test/restful`
-- See the `test.env` file - get an auth token from GitHub (you need to have write access to `https://github.com/ermolaev1337/test-revoc`)
-- Create `.env` file and put there the token as a var `GITHUB_TOKEN`
-- Run `restful-run.sh`
-- See the output files in the directory `./heimdalljs/test/restful`
+- See the output files in the directory `./logs/` per docker service
 
 ## Test
 - Run Mocha tests for Heimdalljs `cd heimdalljs && npm i && npm run test`
