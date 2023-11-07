@@ -1,9 +1,46 @@
 version: "3.9"
+
 services:
-  heimdall:
-    container_name: heimdall
+  heimdall-ca: &heimdall
+    container_name: heimdall-ca
     build: .
     ports:
-      - 8080:8080
-    volumes:
-      - ./:/app
+      - 8081:8080
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8080" ]
+      interval: 10s
+      timeout: 50s
+      retries: 3
+      start_period: 10s
+  heimdall-issuer:
+    <<: *heimdall
+    container_name: heimdall-issuer
+    ports:
+      - 8082:8080
+  heimdall-holder:
+    <<: *heimdall
+    container_name: heimdall-holder
+    ports:
+      - 8083:8080
+  heimdall-verifier:
+    <<: *heimdall
+    container_name: heimdall-verifier
+    ports:
+      - 8084:8080
+  bootstrap-runner:
+    container_name: bootstrap-runner
+    build:
+      dockerfile: bootstrap-runner.Dockerfile
+    env_file: ./heimdalljs/test/restful/.env
+    depends_on:
+      heimdall-ca:
+        condition: service_healthy
+      heimdall-issuer:
+        condition: service_healthy
+      heimdall-holder:
+        condition: service_healthy
+      heimdall-verifier:
+        condition: service_healthy
+    tty: true
+    command: bash
+
