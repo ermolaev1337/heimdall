@@ -29,9 +29,8 @@ COPY ./heimdalljs /app/heimdalljs
 RUN npm link
 RUN heimdalljs -h
 
-COPY ./.git /app/.git
-
 # https://github.com/msoap/shell2http
+WORKDIR /app/execution
 CMD ["shell2http","-form",\
  "GET:/upload/form", "echo \"<html><body><form method=POST action=/upload/file?name=$v_name enctype=multipart/form-data><input type=file name=uplfile><input type=submit></form>\"",\
  "POST:/upload/file", "cat $filepath_uplfile > $v_name; echo OK \"$v_name $filepath_uplfile\"",\
