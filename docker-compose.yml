@@ -39,6 +39,8 @@ services:
       - 8084:8080
     volumes:
       - logs-verifier:/app/execution
+    networks:
+      - heimdall-network
 
   bootstrap:
     container_name: bootstrap
@@ -87,3 +89,8 @@ volumes:
     driver_opts:
       <<: *default-opts
       device: ${PWD}/logs/bootstrap
+
+networks:
+  heimdall-network:
+    name: heimdall-network
+    driver: bridge
