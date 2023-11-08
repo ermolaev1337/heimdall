@@ -44,7 +44,7 @@ services:
     container_name: bootstrap
     build:
       dockerfile: bootstrap.Dockerfile
-    env_file: ./heimdalljs/test/restful/.env
+    env_file: .env
     depends_on:
       heimdall-ca:
         condition: service_healthy
