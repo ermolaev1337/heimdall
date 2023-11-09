@@ -31,7 +31,7 @@ RUN heimdalljs -h
 
 # https://github.com/msoap/shell2http
 WORKDIR /app/execution
-CMD ["shell2http","-form",\
+CMD ["shell2http","-show-errors","-form",\
  "GET:/upload/form", "echo \"<html><body><form method=POST action=/upload/file?name=$v_name enctype=multipart/form-data><input type=file name=uplfile><input type=submit></form>\"",\
  "POST:/upload/file", "cat $filepath_uplfile > $v_name; echo OK \"$v_name $filepath_uplfile\"",\
  "/heimdalljs/key/new", "heimdalljs key new $v_seed > $v_name ; cat $v_name",\
