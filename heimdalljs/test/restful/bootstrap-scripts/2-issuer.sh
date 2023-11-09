@@ -3,9 +3,11 @@
 
 echo "Generate Private Key of Issuer, saving as issuer_sk.txt"
 curl -s "http://$IP_ISSUER/heimdalljs/key/new?seed=$SEED_ISSUER&name=issuer_sk.txt" > issuer_sk.txt
+SECRET_KEY_ISSUER=$(cat issuer_sk.txt)
 
+echo "$SECRET_KEY_ISSUER"
 echo "Deriving Public Key of Issuer, saving as issuer_pk.json"
-curl -s "http://$IP_ISSUER/heimdalljs/key/pub?private=issuer_sk.txt&name=issuer_pk.json" > issuer_pk.json
+curl -s "http://$IP_ISSUER/heimdalljs/key/pub?private=$SECRET_KEY_ISSUER&name=issuer_pk.json" > issuer_pk.json
 
 echo "Saving Attributes for Credential of Issuer as attr_issuer.json"
 cat <<EOM > attr_issuer.json
@@ -21,6 +23,8 @@ cat <<EOM > attr_issuer.json
 ]
 EOM
 
+PUBLIC_KEY_ISSUER=$(cat issuer_pk.json)
+echo "$PUBLIC_KEY_ISSUER"
 echo "Uploading files of Issuer (Attributes for Credential, and Public Key) to Heimdall of CA, saving as attr_issuer.json, and issuer_pk.json"
 curl -s --request POST "http://$IP_CA/upload/file?name=attr_issuer.json" --form "uplfile=@attr_issuer.json"
 curl -s --request POST "http://$IP_CA/upload/file?name=issuer_pk.json" --form "uplfile=@issuer_pk.json"

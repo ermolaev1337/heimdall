@@ -3,9 +3,10 @@
 
 echo "Generate Private Key of Holder, saving as holder_sk.txt"
 curl -s "http://$IP_HOLDER/heimdalljs/key/new?seed=$SEED_HOLDER&name=holder_sk.txt" > holder_sk.txt
-
+SECRET_KEY_HOLDER=$(cat holder_sk.txt)
+echo "$SECRET_KEY_HOLDER"
 echo "Deriving Public Key of Holder, saving as holder_pk.json"
-curl -s "http://$IP_HOLDER/heimdalljs/key/pub?private=holder_sk.txt&name=holder_pk.json" > holder_pk.json
+curl -s "http://$IP_HOLDER/heimdalljs/key/pub?private=$SECRET_KEY_HOLDER&name=holder_pk.json" > holder_pk.json
 
 echo "Saving Attributes for Credential of Holder as attr_holder.json"
 cat <<EOM > attr_holder.json
@@ -21,6 +22,8 @@ cat <<EOM > attr_holder.json
 ]
 EOM
 
+PUBLIC_KEY_HOLDER=$(cat holder_pk.json)
+echo "$PUBLIC_KEY_HOLDER"
 echo "Uploading files of Holder (Attributes for Credential, and Public Key) to Heimdall of Issuer, saving as attr_holder.json, and holder_pk.json"
 curl -s --request POST "http://$IP_ISSUER/upload/file?name=attr_holder.json" --form "uplfile=@attr_holder.json"
 curl -s --request POST "http://$IP_ISSUER/upload/file?name=holder_pk.json" --form "uplfile=@holder_pk.json"
