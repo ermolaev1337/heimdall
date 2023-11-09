@@ -1,6 +1,8 @@
 #!/bin/bash
 
 echo "---USE CASE---"
+sh ../case-scripts/0-issuer.sh
+wait
 sh ../case-scripts/1-verifier.sh
 wait
 sh ../case-scripts/2-holder.sh
