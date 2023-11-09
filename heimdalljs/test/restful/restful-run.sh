@@ -13,13 +13,17 @@ sh ../bootstrap-scripts/5-issuer.sh
 wait
 
 echo "---USE CASE---"
-sh ../case-scripts/1-holder.sh
+sh ../case-scripts/1-verifier.sh
 wait
-sh ../case-scripts/2-verifier.sh
+sh ../case-scripts/2-holder.sh
 wait
-sh ../case-scripts/3-issuer.sh
+sh ../case-scripts/3-verifier.sh
 wait
-sh ../case-scripts/4-holder.sh
+sh ../case-scripts/4-issuer.sh
 wait
 sh ../case-scripts/5-verifier.sh
+wait
+sh ../case-scripts/6-holder.sh
+wait
+sh ../case-scripts/7-verifier.sh
 wait
