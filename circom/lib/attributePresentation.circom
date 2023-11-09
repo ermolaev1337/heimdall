@@ -36,6 +36,10 @@ template AttributePresentation(depth, revocationDepth) {
 	signal output attributeHash; //6
 	signal output out_challenge; //7
 	signal output out_expiration; //7
+	signal output out_issuerPK[2];
+
+	out_issuerPK[0] <== issuerPK[0];
+	out_issuerPK[1] <== issuerPK[1];
 	/*
 	* Meta calculations
 	*/
