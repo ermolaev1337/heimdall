@@ -15,6 +15,12 @@ services:
       start_period: 10s
     volumes:
       - logs-ca:/app/execution
+#      - ./circom:/app/circom
+#    working_dir: /app/circom
+#    command: bash -c "npm i && bash"
+#    tty: true
+    networks:
+      - heimdall-network
 
   heimdall-issuer:
     <<: *heimdall
@@ -23,6 +29,8 @@ services:
       - 8082:8080
     volumes:
       - logs-issuer:/app/execution
+    networks:
+      - heimdall-network
 
   heimdall-holder:
     <<: *heimdall
@@ -31,6 +39,8 @@ services:
       - 8083:8080
     volumes:
       - logs-holder:/app/execution
+    networks:
+      - heimdall-network
 
   heimdall-verifier:
     <<: *heimdall
@@ -58,6 +68,8 @@ services:
         condition: service_healthy
     volumes:
       - logs-bootstrap:/app/execution
+    networks:
+      - heimdall-network
 
 volumes:
   logs-ca: &default-volume
