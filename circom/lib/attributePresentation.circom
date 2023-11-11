@@ -16,7 +16,7 @@ template AttributePresentation(depth, revocationDepth) {
 	signal input lemmaRevocation[revocationDepth + 2];
 	signal input revocationLeaf;
 	signal input signChallenge[3];
-	signal input issuerPK[2]; //TODO forward the Issuer PK
+	signal input issuerPK[2];
 	// Content
 	signal  input lemma[depth + 2];
 	/*
