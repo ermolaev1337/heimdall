@@ -45,7 +45,7 @@ const generatePolygon = async (index, options) => {
             parsePolygon(polyJSON)
         );
         await presentation.generate();
-        await presentation.verify(poseidonHash);
+        await presentation.verify(poseidonHash, credential, revocationTree.root);
         let re = await presentation.verify(poseidonHash);
         if (re === false) return Promise.reject(re);
 

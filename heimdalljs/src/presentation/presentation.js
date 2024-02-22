@@ -216,7 +216,6 @@ class Presentation {
                 '1696606287033'
             ]
          */
-        console.debug = function() {};
         console.debug("---START verifyMeta()---")
         // Checks if meta type hash from public signal is the same like in public input
         const hashedType = hasher([this.output.meta.type]).toString();
