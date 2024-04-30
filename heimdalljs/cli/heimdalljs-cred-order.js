@@ -11,14 +11,7 @@ const {signPoseidon} = require("../circomlib/eddsa.js");
 const { symlinkSync } = require("fs");
 
 program
-    // .requiredOption("-a, --attributes <attributes>", "Path to a the attributes of the credential " +
-    //     "as json array file")
-    // .requiredOption("-i, --id <Number>", "Id of the credential")
     .requiredOption("-p, --publicKey <Path>", "Path to the public key of the holder")
-    // .requiredOption("-e, --expiration <Number>", "Expiration time in days")
-    // .requiredOption("-t, --type <String>", "Type of the credential")
-    // .requiredOption("--delegatable <Number>", "Is the credential delegatable?", "0")
-    // .requiredOption("-r, --registry <String>", "Link to the revocation registry")
     .requiredOption("-s, --secretKey <Path>", "Path to the secret key of the issuer")
     .requiredOption("-wid, --warehouse_id <String>", "Warehouse ID", "warehouse_id_1")
     .option("-d, --destination <Path>", "Path for storing the credential",
@@ -63,7 +56,7 @@ async function generateCredential() {
             JSON.parse(publicKey),
             exp,
             "order",
-            false,
+            "0",
             "", // registry
             secretKey,
             merklePoseidon,

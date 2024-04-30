@@ -55,11 +55,13 @@ class Presentation {
         }
         this.privateInput.signatureMeta = [cred.signature.R8[0], cred.signature.R8[1], cred.signature.S];
         this.privateInput.issuerPK = [cred.signature.pk[0], cred.signature.pk[1]];
-        let positionRevocationTree = Math.floor(cred.attributes[0] / Number(MAX_LEAF_SIZE)); // Leaf 4898
-        let proofRevocation = revocationTree.generateProof(positionRevocationTree);
-        this.privateInput.pathRevocation = proofRevocation.path;
-        this.privateInput.lemmaRevocation = proofRevocation.lemma;
-        this.privateInput.revocationLeaf = revocationTree.leaves[positionRevocationTree];
+        if (!cred.attributes[4] == "") { // Credential VC
+            let positionRevocationTree = Math.floor(cred.attributes[0] / Number(MAX_LEAF_SIZE)); //Leaf    4898
+            let proofRevocation = revocationTree.generateProof(positionRevocationTree);
+            this.privateInput.pathRevocation = proofRevocation.path;
+            this.privateInput.lemmaRevocation = proofRevocation.lemma;
+            this.privateInput.revocationLeaf = revocationTree.leaves[positionRevocationTree];
+        }
         this.privateInput.challenge = challenge;
         if (typeof sk !== 'undefined') {
             let signChallenge = signatureGenerator(sk, BigInt(challenge));
@@ -89,20 +91,24 @@ class Presentation {
     async generate() {
         let root = path.join(require.main.paths[0].split("node_modules")[0].slice(0, -1), "../");
         //let root = path.join(require.main.paths[0].split("node_modules")[0].slice(0, -1));
+        console.log("Proof START -----> \n\n");
         let t0 = performance.now();
         const {proof, publicSignals} = await snarkjs.groth16.fullProve(
             this.privateInput,
             // path.join(root, "zkp", this.type, "test.attributePresentation.wasm"),
             // path.join(root, "zkp", this.type, "test.attributePresentation.final.zkey")
-            path.join(root, "zkp", this.type, "circuit.wasm"),
+            // path.join(root, "zkp", this.type, "circuit.wasm"),
+            // path.join(root, "zkp", this.type, "circuit_final.zkey")
+            path.join(root, "zkp", this.type, "orderPresentation.wasm"),
             path.join(root, "zkp", this.type, "circuit_final.zkey")
         );
         let t1 = performance.now();
 
         this.proof = proof;
         this.publicSignals = publicSignals;
-
         let res = await this.verifyProof();
+        console.log(res) ;
+        console.log("Proof END <----- \n\n");
         // Overwriting private input
         this.privateInput = {};
 
@@ -333,7 +339,14 @@ const PresentationTypes = Object.freeze({
     "delegation": "delegation",
     "attribute": "attribute",
     "polygon": "polygon",
-    "range": "range"
+    "range": "range",
+    "order": "order",
 });
 
-module.exports = {Presentation, PresentationTypes};
+const WarehouseIDs = Object.freeze({
+    "warehouse_id_1": ["5164394512962286123551434888475230695915410682610221807865249729271433313800","21248073315367102214062159875740981270836494537532014052617290117419370925021"],
+    "warehouse_id_2": ["1189690620579088170688644016592043039302900302387294835393188512887044254746","19675413315380914732539051340474022560033897174859913862540265644306992765879"],
+    "warehouse_id_3": ["19868354295192600615003534531724131816855042481825854954609437059186674702666","970460077100323660428288302833559761014266932551866313516956786281977830608"],
+});
+
+module.exports = {Presentation, PresentationTypes, WarehouseIDs};
