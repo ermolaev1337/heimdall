@@ -2,4 +2,5 @@
 const { program } = require("commander");
 
 program.command("new", "Generate a new credential");
+program.command("order", "Generate a new credential");
 program.parse(process.argv);
