@@ -20,7 +20,7 @@ RUN apt upgrade -y
 RUN apt install golang-go -y
 ENV GO111MODULE=on
 
-RUN go get github.com/msoap/shell2http@latest
+RUN go install github.com/msoap/shell2http@latest
 RUN mkdir -p ~/bin/
 RUN ln -s $(go env GOPATH)/bin/shell2http ~/bin/shell2http
 ENV PATH=$PATH:/root/go/bin/
