@@ -13,7 +13,7 @@ cat <<EOM > attr_holder.json
 [
 	"John",
 	"Jones",
-	"male",
+	"4543 Chapmans Lane, 87109, Albuquerque",
 	"843995700",
 	"blue",
 	"180",
