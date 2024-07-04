@@ -50,6 +50,14 @@ services:
     networks:
       - heimdall-network
 
+  heimdall-verifier-delivery:
+    <<: *heimdall
+    container_name: heimdall-verifier-delivery
+    ports:
+      - 8085:8080
+    networks:
+      - heimdall-network
+
   bootstrap:
     container_name: bootstrap
     build:

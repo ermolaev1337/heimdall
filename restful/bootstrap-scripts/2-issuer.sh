@@ -13,7 +13,7 @@ cat <<EOM > attr_issuer.json
 [
 	"Egor",
 	"Ermolaev",
-	"male",
+	"4, Bd Des Lumières, 4369, Esch-sur-Alzette",
 	"843995700",
 	"brown",
 	"182",
