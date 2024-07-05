@@ -16,98 +16,98 @@ services:
 #      - ./circom:/app/circom
 #    working_dir: /app/circom
 #    command: bash -c "npm i && bash"
-    tty: true
-#    networks:
-#      - heimdall-network
+#    tty: true
+    networks:
+      - heimdall-network
+
+  heimdall-issuer:
+    <<: *heimdall
+    container_name: heimdall-issuer
+    ports:
+      - 8082:8080
+#    volumes:
+#      - logs-issuer:/app/execution
+    networks:
+      - heimdall-network
+
+  heimdall-holder:
+    <<: *heimdall
+    container_name: heimdall-holder
+    ports:
+      - 8083:8080
+#    volumes:
+#      - logs-holder:/app/execution
+    networks:
+      - heimdall-network
+
+  heimdall-verifier:
+    <<: *heimdall
+    container_name: heimdall-verifier
+    ports:
+      - 8084:8080
+#    volumes:
+#      - logs-verifier:/app/execution
+    networks:
+      - heimdall-network
+
+  heimdall-verifier-delivery:
+    <<: *heimdall
+    container_name: heimdall-verifier-delivery
+    ports:
+      - 8085:8080
+    networks:
+      - heimdall-network
+
+  bootstrap:
+    container_name: bootstrap
+    build:
+      dockerfile: bootstrap.Dockerfile
+    env_file: .env
+    depends_on:
+      heimdall-ca:
+        condition: service_healthy
+      heimdall-issuer:
+        condition: service_healthy
+      heimdall-holder:
+        condition: service_healthy
+      heimdall-verifier:
+        condition: service_healthy
+#    volumes:
+#      - logs-bootstrap:/app/execution
+    networks:
+      - heimdall-network
+
+#volumes:
+#  logs-ca: &default-volume
+#    driver: local
+#    driver_opts: &default-opts
+#      type: bind
+#      device: ${PWD}/logs/ca
 #
-#  heimdall-issuer:
-#    <<: *heimdall
-#    container_name: heimdall-issuer
-#    ports:
-#      - 8082:8080
-##    volumes:
-##      - logs-issuer:/app/execution
-#    networks:
-#      - heimdall-network
+#  logs-issuer:
+#    <<: *default-volume
+#    driver_opts:
+#      <<: *default-opts
+#      device: ${PWD}/logs/issuer
 #
-#  heimdall-holder:
-#    <<: *heimdall
-#    container_name: heimdall-holder
-#    ports:
-#      - 8083:8080
-##    volumes:
-##      - logs-holder:/app/execution
-#    networks:
-#      - heimdall-network
+#  logs-holder:
+#    <<: *default-volume
+#    driver_opts:
+#      <<: *default-opts
+#      device: ${PWD}/logs/holder
 #
-#  heimdall-verifier:
-#    <<: *heimdall
-#    container_name: heimdall-verifier
-#    ports:
-#      - 8084:8080
-##    volumes:
-##      - logs-verifier:/app/execution
-#    networks:
-#      - heimdall-network
+#  logs-verifier:
+#    <<: *default-volume
+#    driver_opts:
+#      <<: *default-opts
+#      device: ${PWD}/logs/verifier
 #
-#  heimdall-verifier-delivery:
-#    <<: *heimdall
-#    container_name: heimdall-verifier-delivery
-#    ports:
-#      - 8085:8080
-#    networks:
-#      - heimdall-network
-#
-#  bootstrap:
-#    container_name: bootstrap
-#    build:
-#      dockerfile: bootstrap.Dockerfile
-#    env_file: .env
-#    depends_on:
-#      heimdall-ca:
-#        condition: service_healthy
-#      heimdall-issuer:
-#        condition: service_healthy
-#      heimdall-holder:
-#        condition: service_healthy
-#      heimdall-verifier:
-#        condition: service_healthy
-##    volumes:
-##      - logs-bootstrap:/app/execution
-#    networks:
-#      - heimdall-network
-#
-##volumes:
-##  logs-ca: &default-volume
-##    driver: local
-##    driver_opts: &default-opts
-##      type: bind
-##      device: ${PWD}/logs/ca
-##
-##  logs-issuer:
-##    <<: *default-volume
-##    driver_opts:
-##      <<: *default-opts
-##      device: ${PWD}/logs/issuer
-##
-##  logs-holder:
-##    <<: *default-volume
-##    driver_opts:
-##      <<: *default-opts
-##      device: ${PWD}/logs/holder
-##
-##  logs-verifier:
-##    <<: *default-volume
-##    driver_opts:
-##      <<: *default-opts
-##      device: ${PWD}/logs/verifier
-##
-##  logs-bootstrap:
-##    <<: *default-volume
-##    driver_opts:
-##      <<: *default-opts
-##      device: ${PWD}/logs/bootstrap
-#
-#networks:
-#  heimdall-network:
-#    external: true
+#  logs-bootstrap:
+#    <<: *default-volume
+#    driver_opts:
+#      <<: *default-opts
+#      device: ${PWD}/logs/bootstrap
+
+networks:
+  heimdall-network:
+    external: true

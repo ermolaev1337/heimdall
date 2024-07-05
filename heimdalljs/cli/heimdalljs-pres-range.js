@@ -23,8 +23,8 @@ program.arguments("<index>")
 const generatePresentationRange = async (index, options) => {
     try {
         let credential = JSON.parse(await fs.readFile(options.credential, "utf8"));
-        
-        let revocationTree = await getRevocationTree(options.revocation, credential.attributes[4]);
+
+        let revocationTree = await getRevocationTree(true);
 
         let expiration = new Date().getTime() + options.expiration * 864e5;
 
@@ -46,7 +46,7 @@ const generatePresentationRange = async (index, options) => {
         );
         await presentation.generate();
         await presentation.verify(poseidonHash, credential, revocationTree.root);
-        let re = await presentation.verify(poseidonHash);
+        let re = await presentation.verify(poseidonHash, credential);
         if (re === false) return Promise.reject(re);
         return Promise.resolve(presentation);
     } catch (err) {
