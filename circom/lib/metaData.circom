@@ -96,3 +96,18 @@ template Link() {
 	hash.inputs[2] <== pk[1];	
 	out <== hash.out;
 }
+
+template CheckHolderBinding() {
+    signal input signChallenge[3];
+    signal input challenge;
+    signal input holderPK[2];
+
+    component eddsaVerify = EdDSAPoseidonVerifier();
+    eddsaVerify.enabled <== 1;
+    eddsaVerify.Ax <== holderPK[0];
+    eddsaVerify.Ay <== holderPK[1];
+    eddsaVerify.R8x <== signChallenge[0];
+    eddsaVerify.R8y <== signChallenge[1];
+    eddsaVerify.S <== signChallenge[2];
+    eddsaVerify.M <== challenge;
+}

@@ -2,6 +2,8 @@ const {AttributePresentation} = require("./attribute");
 const {stringifyBigInts} = require("../util");
 const {PresentationTypes, Presentation} = require("./presentation");
 
+const {MAX_POLYGON_SIZE} = require("../../cli/util");
+
 class PolygonPresentation extends AttributePresentation {
     constructor(
         cred,
@@ -32,7 +34,9 @@ class PolygonPresentation extends AttributePresentation {
         this.privateInput.location = [cred.attributes[index], cred.attributes[index + 1]];
     }
 
-    async verify(hasher) {
+    async verify(hasher, cred, root, challenge, publicKeyPath) {
+        if (!this.revocationRoot)
+            this.revocationRoot = root;
         try {
             let copy = JSON.stringify(stringifyBigInts(this));
             let res = await this.verifyProof();
@@ -55,9 +59,9 @@ class PolygonPresentation extends AttributePresentation {
             }
             this.output.content.vertx = [];
             this.output.content.verty = [];
-            for (let i = 0; i < 50; i++) {
+            for (let i = 0; i < MAX_POLYGON_SIZE; i++) {
                 this.output.content.vertx.push(this.publicSignals[i + 13 ]);
-                this.output.content.verty.push(this.publicSignals[i + 13 + 50]);
+                this.output.content.verty.push(this.publicSignals[i + 13 + MAX_POLYGON_SIZE]);
             }
             this.output.content.inbound = Number(this.publicSignals[6]) === 1;
             res &&= copy === JSON.stringify(this);

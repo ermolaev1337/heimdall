@@ -1,6 +1,7 @@
 const {AttributePresentation} = require("./attribute");
 const {stringifyBigInts} = require("../util");
 const {PresentationTypes, Presentation} = require("./presentation");
+const { exitOverride } = require("commander");
 
 class RangePresentation extends AttributePresentation {
     constructor(
@@ -33,7 +34,9 @@ class RangePresentation extends AttributePresentation {
         this.privateInput.attribute = cred.attributes[index];
     }
 
-    async verify(hasher) {
+    async verify(hasher, cred, root, challenge, publicKeyPath) {
+        if (!this.revocationRoot)
+            this.revocationRoot = root;
         try {
             let copy = JSON.stringify(stringifyBigInts(this));
             let res = await this.verifyProof();

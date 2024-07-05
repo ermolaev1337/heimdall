@@ -92,8 +92,10 @@ class Presentation {
         let t0 = performance.now();
         const {proof, publicSignals} = await snarkjs.groth16.fullProve(
             this.privateInput,
-            path.join(root, "zkp", this.type, "test.attributePresentation.wasm"),
-            path.join(root, "zkp", this.type, "test.attributePresentation.final.zkey")
+            // path.join(root, "zkp", this.type, "test.attributePresentation.wasm"),
+            // path.join(root, "zkp", this.type, "test.attributePresentation.final.zkey")
+            path.join(root, "zkp", this.type, "circuit.wasm"),
+            path.join(root, "zkp", this.type, "circuit_final.zkey")
         );
         let t1 = performance.now();
 
@@ -114,7 +116,8 @@ class Presentation {
     async verifyProof() {
         let root = path.join(require.main.paths[0].split("node_modules")[0].slice(0, -1), "../");
         //let root = path.join(require.main.paths[0].split("node_modules")[0].slice(0, -1));
-        const vKey = JSON.parse(fs.readFileSync(path.join(root, "zkp", this.type, "test.attributePresentation.verification.key.json")));
+        // const vKey = JSON.parse(fs.readFileSync(path.join(root, "zkp", this.type, "test.attributePresentation.verification.key.json")));
+        const vKey = JSON.parse(fs.readFileSync(path.join(root, "zkp", this.type, "verification_key.json")));
 
         let res = await snarkjs.groth16.verify(vKey, this.publicSignals, this.proof).catch(err => console.error(err));
         if (res === true) {
@@ -213,7 +216,6 @@ class Presentation {
                 '1696606287033'
             ]
          */
-        console.debug = function() {};
         console.debug("---START verifyMeta()---")
         // Checks if meta type hash from public signal is the same like in public input
         const hashedType = hasher([this.output.meta.type]).toString();

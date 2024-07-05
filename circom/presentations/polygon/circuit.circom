@@ -1,23 +1,24 @@
-include "../../lib/metaData.circom"
-include "../../lib/contentData.circom"
+include "../../lib/metaData.circom";
+include "../../lib/contentData.circom";
+include "../../lib/checkRevocation.circom";
 
 template PolygonPresentation(depth, revocationDepth, polygonSize) {
 	/*
-	* Private Inputs
+	*  Inputs
 	*/
 	// Meta
-	signal private input pathMeta[depth];
-	signal private input lemmaMeta[depth + 2];
-	signal private input meta[8]; //Fixed Size of meta attributes in each credential
-	signal private input signatureMeta[3];
-	signal private input pathRevocation[revocationDepth];
-	signal private input lemmaRevocation[revocationDepth + 2];
-	signal private input revocationLeaf;
-	signal private input signChallenge[3];
-	signal private input issuerPK[2];
+	signal input pathMeta[depth];
+	signal input lemmaMeta[depth + 2];
+	signal input meta[8]; //Fixed Size of meta attributes in each credential
+	signal input signatureMeta[3];
+	signal input pathRevocation[revocationDepth];
+	signal input lemmaRevocation[revocationDepth + 2];
+	signal input revocationLeaf;
+	signal input signChallenge[3];
+	signal input issuerPK[2];
 	// Content
-	signal private input lemma[depth + 2];
-	signal private input location[2];
+	signal input lemma[depth + 2];
+	signal input location[2];
 	/*
 	* Public Inputs
 	*/
@@ -26,7 +27,7 @@ template PolygonPresentation(depth, revocationDepth, polygonSize) {
 	signal input expiration; //8
 	signal output type; //0
 	signal output revocationRoot; //1
-	signal output revocationRegistry //2
+	signal output revocationRegistry; //2
 	signal output revoked; //3
 	signal output linkBack; //4
 	signal output delegatable; //5
@@ -34,7 +35,13 @@ template PolygonPresentation(depth, revocationDepth, polygonSize) {
 	signal input path[depth]; // 9..12
 	signal input vertx[polygonSize]; //13..62
 	signal input verty[polygonSize]; //63..120
+
 	signal output inbound; //6
+	signal output out_challenge; //7
+	signal output out_expiration; //8
+	signal output out_path[depth]; //9...
+	signal output poly_vertx[polygonSize]; //13
+	signal output poly_verty[polygonSize];
 	/*
 	* Meta Calculations
 	*/
@@ -62,7 +69,7 @@ template PolygonPresentation(depth, revocationDepth, polygonSize) {
 	// End - Check Meta Integrity
 
 	type <== checkMetaDataIntegrity.type;
-	revocationRoot <== lemmaRevocation[revocationDepth + 1];
+	// revocationRoot <== lemmaRevocation[revocationDepth + 1];
 	delegatable <== checkMetaDataIntegrity.delegatable;
 
 	// Begin - Check Expiration
@@ -125,7 +132,18 @@ template PolygonPresentation(depth, revocationDepth, polygonSize) {
 	polygon.location[1] <== location[1];
 	polygon.credentialRoot <== checkMetaDataIntegrity.credentialRoot;
 
-	inbound <== polygon.inbound;
+	inbound <== polygon.inbound; //6
+	challenge ==> out_challenge; //7 challenge
+	expiration ==> out_expiration; //8 expiration
+	//9,10,11,12 path
+	for (var i = 0; i < depth; i++) {
+		path[i] ==> out_path[i];
+	}
+	for(var i = 0; i < polygonSize; i++) {
+		// Assign output signals
+		vertx[i] ==> poly_vertx[i]; //13
+		verty[i] ==> poly_verty[i];
+	}
 }
 
-component main = PolygonPresentation(4, 13, 50);
+component main = PolygonPresentation(4, 13, 4);

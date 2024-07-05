@@ -4,7 +4,7 @@ const fs = require("fs/promises");
 const path = require("path");
 const {stringifyBigInts} = require("../src/util");
 const {exec, execSync} = require("child_process");
-const MAX_POLYGON_SIZE = 50;
+const MAX_POLYGON_SIZE = 4; //50;
 
 const getSecretKey = async (secretKeyPath) => {
     try {
@@ -132,5 +132,5 @@ const writeFilesRevocation = async (reg, destination) => {
 
 module.exports = {
     parsePolygon, getRevocationTree, getSecretKey, writeFilesRevocation, pushGitRevocation, updateTree,
-    getRevocationRoot, initRepo
+    getRevocationRoot, initRepo, MAX_POLYGON_SIZE
 };
