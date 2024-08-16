@@ -41,5 +41,6 @@ CMD ["shell2http","-show-errors","-cgi","-form", \
  "/heimdalljs/pres/attribute", "echo \"Access-Control-Allow-Origin: *\n\"; heimdalljs pres attribute $v_index --expiration $v_expiration --challenge $v_challenge --destination $v_destination --secretKey $v_secretKey --credential $v_credential ; cat $v_destination",\
  "/heimdalljs/verify", "heimdalljs verify $v_path --publicKey $v_publicKey --challenge $v_challenge > $v_name ; cat $v_name",\
  "/heimdalljs/revoc/update", "heimdalljs revoc update $v_index -g $v_token > $v_name ; cat $v_name",\
+ "/cred", "echo \"Access-Control-Allow-Origin: *\n\"; cat $v_path",\
  "/data", "echo \"Access-Control-Allow-Origin: *\n\"; echo 'some data for another host'"\
  ]
